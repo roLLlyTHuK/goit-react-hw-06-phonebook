@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getContacts } from '../../redux/selectors';
 import { addContact } from '../../redux/contactsSlice';
-import { nanoid } from '@reduxjs/toolkit';
+import { nanoid } from 'nanoid';
 
 const initialValues = {
   name: '',
@@ -36,18 +36,20 @@ export const ContactForm = () => {
       ) === undefined
     ) {
       const item = { id: nanoid(), name: values.name, number: values.number };
+      console.log(item);
       dispatch(addContact(item));
       actions.resetForm();
     } else {
       alert(`${values.name} is already in contacts.`);
+      return;
     }
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleOnSubmit}
       validationSchema={userSchema}
+      onSubmit={handleOnSubmit}
     >
       <Form>
         <Label>Name</Label>

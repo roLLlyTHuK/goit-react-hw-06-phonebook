@@ -12,9 +12,9 @@ export const contactsSlice = createSlice({
   initialState: { contacts: initContacts },
   reducers: {
     addContact(state, action) {
-      // state.contacts.push(action.payload);
-      state.contacts = [...state.contacts, action.payload];
-      console.log(state.contacts);
+      // state.contacts = [...state.contacts, action.payload];
+      state.contacts.push(action.payload);
+      // console.log(state.contacts);
     },
     deleteContact(state, action) {
       const index = state.contacts.findIndex(

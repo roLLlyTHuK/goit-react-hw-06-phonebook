@@ -1,12 +1,21 @@
-import { Form, Label, Input } from './Filter.styled'
+import { Form, Label, Input } from './Filter.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeFilter } from '../../redux/filterSlice';
+import { getFilter } from '../../redux/selectors';
+export const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
 
-export const Filter = ({ value, onChange }) => {
   return (
     <Form>
       <Label>Filter contacts by name: </Label>
-      <Input type="text" value={value} onChange={onChange} />
+      <Input
+        type="text"
+        value={filter}
+        onChange={e => {
+          dispatch(changeFilter(e.target.value));
+        }}
+      />
     </Form>
   );
-}
-
-
+};

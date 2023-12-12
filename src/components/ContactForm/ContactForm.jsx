@@ -1,11 +1,17 @@
-import { Form, Input, Button, Label } from './ContactForm.styled';
-import { Formik } from 'formik';
+import { nanoid } from 'nanoid';
+import {
+  Container,
+  Text,
+  Input,
+  Button,
+  ErrorText,
+} from './ContactForm.styled';
+import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getContacts } from '../../redux/selectors';
 import { addContact } from '../../redux/contactsSlice';
-import { nanoid } from 'nanoid';
 
 const initialValues = {
   name: '',
@@ -15,7 +21,9 @@ const initialValues = {
 let userSchema = yup.object({
   name: yup
     .string()
-    .matches(/^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/)
+    .matches(
+      /^[a-zA-Zа-яА-ЯґєіїҐЄІЇ]+(([' -][a-zA-Zа-яА-ЯґєіїҐЄІЇ ])?[a-zA-Zа-яА-ЯґєіїҐЄІЇ]*)*$/
+    )
     .required(),
   number: yup
     .string()
@@ -25,7 +33,7 @@ let userSchema = yup.object({
     .required(),
 });
 
-export const ContactForm = () => {
+export function ContactForm() {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
 
@@ -36,38 +44,50 @@ export const ContactForm = () => {
       ) === undefined
     ) {
       const item = { id: nanoid(), name: values.name, number: values.number };
-      console.log(item);
       dispatch(addContact(item));
       actions.resetForm();
     } else {
       alert(`${values.name} is already in contacts.`);
-      return;
     }
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={userSchema}
       onSubmit={handleOnSubmit}
+      validationSchema={userSchema}
     >
-      <Form>
-        <Label>Name</Label>
+      <Container>
+        <Text>Name</Text>
         <Input
           type="text"
           name="name"
           title="Name may contain only letters, apostrophe, dash and spaces."
         />
-
-        <Label>Number</Label>
+        <ErrorMessage name="name">
+          {() => (
+            <ErrorText>
+              Wrong name: Name may contain only letters, apostrophe, dash and
+              spaces.
+            </ErrorText>
+          )}
+        </ErrorMessage>
+        <Text>Number</Text>
         <Input
           type="tel"
           name="number"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         />
-
+        <ErrorMessage name="number">
+          {() => (
+            <ErrorText>
+              Phone number must be digits and can contain spaces, dashes,
+              parentheses and can start with +
+            </ErrorText>
+          )}
+        </ErrorMessage>
         <Button type="Submit">Add contact</Button>
-      </Form>
+      </Container>
     </Formik>
   );
-};
+}
